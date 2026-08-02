@@ -1,5 +1,6 @@
 // frontend/src/MenuDisplay.tsx
 import { useState } from 'react'
+import './MenuDisplay.css'
 
 interface SweetItem {
   id: string
@@ -128,76 +129,33 @@ function MenuDisplay() {
         {filteredSweets.map((sweet) => (
           <div
             key={sweet.id}
+            className="menu-card"
             onClick={() => setSelectedItem(sweet)}
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, boxShadow 0.2s',
-              ':hover': {
-                transform: 'translateY(-5px)',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
-              }
-            }}
           >
-            <div style={{
-              height: '200px',
-              background: `url(${sweet.image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundColor: '#f3f4f6'
-            }} />
-            <div style={{ padding: '20px' }}>
+            <div 
+              className="menu-card-image"
+              style={{ backgroundImage: `url(${sweet.image})` }}
+            />
+            <div className="menu-card-content">
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'start',
                 marginBottom: '8px'
               }}>
-                <h3 style={{ 
-                  fontSize: '18px', 
-                  color: '#333', 
-                  margin: 0,
-                  fontWeight: 'bold'
-                }}>
+                <h3 className="menu-card-title">
                   {sweet.name}
                 </h3>
-                <span style={{
-                  backgroundColor: '#fdf2f8',
-                  color: '#db2777',
-                  padding: '2px 10px',
-                  borderRadius: '12px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  whiteSpace: 'nowrap'
-                }}>
+                <span className="menu-card-price">
                   {sweet.price}
                 </span>
               </div>
-              <p style={{
-                fontSize: '14px',
-                color: '#666',
-                margin: '8px 0',
-                lineHeight: '1.5'
-              }}>
+              <p className="menu-card-description">
                 {sweet.description}
               </p>
-              <div style={{
-                display: 'flex',
-                gap: '6px',
-                flexWrap: 'wrap',
-                marginTop: '10px'
-              }}>
+              <div className="menu-card-tags">
                 {sweet.tags?.map(tag => (
-                  <span key={tag} style={{
-                    backgroundColor: '#f3f4f6',
-                    color: '#666',
-                    padding: '2px 10px',
-                    borderRadius: '12px',
-                    fontSize: '11px'
-                  }}>
+                  <span key={tag} className="menu-tag">
                     #{tag}
                   </span>
                 ))}

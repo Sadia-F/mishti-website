@@ -1,5 +1,5 @@
 // frontend/src/AdminDashboard.tsx
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface Order {
   id: number

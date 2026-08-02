@@ -1,6 +1,7 @@
 // frontend/src/App.tsx
 import { useState } from 'react'
 import AdminDashboard from './AdminDashboard'
+import MenuDisplay from './MenuDisplay'
 
 function App() {
   // State for form data
@@ -8,7 +9,7 @@ function App() {
   const [customAmount, setCustomAmount] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
-  const [showDashboard, setShowDashboard] = useState(false)
+  const [showDashboard, setShowDashboard] = useState<'form' | 'menu' | 'dashboard'>('form')
   
   const [formData, setFormData] = useState({
     customerName: '',
@@ -96,31 +97,45 @@ function App() {
         <p style={{ color: '#666', fontSize: '16px' }}>Small Family Business • Made with Love ❤️</p>
         
         {/* Navigation Buttons */}
-        <div style={{ marginTop: '15px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
+        <div style={{ marginTop: '15px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
-            onClick={() => setShowDashboard(false)}
+            onClick={() => setShowDashboard('form')}
             style={{
               padding: '8px 20px',
-              backgroundColor: !showDashboard ? '#db2777' : '#e5e7eb',
-              color: !showDashboard ? 'white' : '#333',
+              backgroundColor: showDashboard === 'form' ? '#db2777' : '#e5e7eb',
+              color: showDashboard === 'form' ? 'white' : '#333',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontWeight: !showDashboard ? 'bold' : 'normal'
+              fontWeight: showDashboard === 'form' ? 'bold' : 'normal'
             }}
           >
-            📝 Order Form
+            🍬 Order Form
           </button>
           <button
-            onClick={() => setShowDashboard(true)}
+            onClick={() => setShowDashboard('menu')}
             style={{
               padding: '8px 20px',
-              backgroundColor: showDashboard ? '#db2777' : '#e5e7eb',
-              color: showDashboard ? 'white' : '#333',
+              backgroundColor: showDashboard === 'menu' ? '#db2777' : '#e5e7eb',
+              color: showDashboard === 'menu' ? 'white' : '#333',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontWeight: showDashboard ? 'bold' : 'normal'
+              fontWeight: showDashboard === 'menu' ? 'bold' : 'normal'
+            }}
+          >
+            📸 Menu
+          </button>
+          <button
+            onClick={() => setShowDashboard('dashboard')}
+            style={{
+              padding: '8px 20px',
+              backgroundColor: showDashboard === 'dashboard' ? '#db2777' : '#e5e7eb',
+              color: showDashboard === 'dashboard' ? 'white' : '#333',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: showDashboard === 'dashboard' ? 'bold' : 'normal'
             }}
           >
             📋 Dashboard
@@ -128,8 +143,10 @@ function App() {
         </div>
       </div>
 
-      {/* Conditionally render either the form or the dashboard */}
-      {showDashboard ? (
+      {/* Conditionally render content */}
+      {showDashboard === 'menu' ? (
+        <MenuDisplay />
+      ) : showDashboard === 'dashboard' ? (
         <AdminDashboard />
       ) : (
         /* Order Form */

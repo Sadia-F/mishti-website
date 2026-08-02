@@ -23,6 +23,25 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState('')
+  const [authError, setAuthError] = useState('')
+
+  // Simple password check
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Change this password to whatever you want!
+    const ADMIN_PASSWORD = 'mishti2026'
+    
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true)
+      setAuthError('')
+      fetchOrders()
+    } else {
+      setAuthError('❌ Incorrect password. Please try again.')
+      setPassword('')
+    }
+  }
 
   // Fetch orders from backend
   const fetchOrders = async () => {
@@ -54,7 +73,6 @@ function AdminDashboard() {
         }
       )
       if (response.ok) {
-        // Refresh orders after status update
         fetchOrders()
       }
     } catch (err) {
@@ -62,20 +80,15 @@ function AdminDashboard() {
     }
   }
 
-  // Load orders on component mount
-  useEffect(() => {
-    fetchOrders()
-  }, [])
-
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return '#f59e0b' // Yellow
-      case 'confirmed': return '#3b82f6' // Blue
-      case 'in-progress': return '#8b5cf6' // Purple
-      case 'completed': return '#22c55e' // Green
-      case 'cancelled': return '#ef4444' // Red
-      default: return '#6b7280' // Gray
+      case 'pending': return '#f59e0b'
+      case 'confirmed': return '#3b82f6'
+      case 'in-progress': return '#8b5cf6'
+      case 'completed': return '#22c55e'
+      case 'cancelled': return '#ef4444'
+      default: return '#6b7280'
     }
   }
 
@@ -90,6 +103,74 @@ function AdminDashboard() {
     }
   }
 
+  // If not authenticated, show login screen
+  if (!isAuthenticated) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '400px'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          padding: '40px',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          <h2 style={{ color: '#db2777', textAlign: 'center', marginBottom: '20px' }}>
+            🔐 Admin Access
+          </h2>
+          <p style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
+            Enter the admin password to view orders
+          </p>
+          <form onSubmit={handleLogin}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '1px solid #ddd',
+                borderRadius: '6px',
+                fontSize: '16px',
+                marginBottom: '15px',
+                boxSizing: 'border-box'
+              }}
+              autoFocus
+            />
+            {authError && (
+              <p style={{ color: '#ef4444', fontSize: '14px', marginBottom: '15px' }}>
+                {authError}
+              </p>
+            )}
+            <button
+              type="submit"
+              style={{
+                width: '100%',
+                padding: '12px',
+                backgroundColor: '#db2777',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Unlock Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  // Dashboard content (only visible after login)
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -138,6 +219,23 @@ function AdminDashboard() {
           }}>
             Total Orders: {orders.length}
           </span>
+          <button
+            onClick={() => {
+              setIsAuthenticated(false)
+              setPassword('')
+            }}
+            style={{
+              marginLeft: '10px',
+              padding: '8px 16px',
+              backgroundColor: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}
+          >
+            🚪 Logout
+          </button>
           <button
             onClick={fetchOrders}
             style={{

@@ -1,4 +1,4 @@
-// src/App.tsx
+// frontend/src/App.tsx
 import { useState } from 'react'
 
 function App() {
@@ -44,7 +44,8 @@ function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:8001/api/orders', {
+      // ✅ UPDATED: Using Render backend URL
+      const response = await fetch('https://mishti-api.onrender.com/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ function App() {
         setSubmitMessage('❌ Error: ' + (data.detail || 'Something went wrong'))
       }
     } catch (error) {
-      setSubmitMessage('❌ Error: Could not connect to server. Make sure the backend is running on port 8001.')
+      setSubmitMessage('❌ Error: Could not connect to server. Make sure the backend is running.')
     } finally {
       setIsSubmitting(false)
     }

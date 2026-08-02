@@ -11,7 +11,10 @@ app = FastAPI(title="Mishti & Mimi API")
 # Configure CORS (allows frontend to talk to backend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Your React app
+    allow_origins=[
+        "http://localhost:5173",  # Local development
+        "https://mishti-and-mimi-website.vercel.app",  # Your live website
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

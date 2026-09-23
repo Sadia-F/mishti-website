@@ -1,4 +1,3 @@
-// frontend/src/MenuDisplay.tsx
 import { useState } from 'react'
 import './MenuDisplay.css'
 
@@ -7,295 +6,40 @@ interface SweetItem {
   name: string
   description: string
   price: string
-  image: string
-  category: 'narus' | 'burfi' | 'special'
-  tags?: string[]
+  category: 'narus' | 'burfi'
+  color: string
+  tags: string[]
 }
 
-function MenuDisplay() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+const sweets: SweetItem[] = [
+  { id: 'narkel-narus', name: 'Narkel Narus', description: 'A Bengali favorite: tender coconut sweets rolled by hand and made for sharing.', price: '16 for $20 · 32 for $45', category: 'narus', color: '#e8ae69', tags: ['coconut', 'traditional'] },
+  { id: 'mango-burfi', name: 'Mango Burfi', description: 'Sunny, fruity mango burfi with a soft, creamy bite.', price: '15 for $30 · 30 for $50', category: 'burfi', color: '#ffc84e', tags: ['mango', 'a little sunshine'] },
+  { id: 'ube-coconut', name: 'Ube Coconut Burfi', description: 'A pretty purple twist on coconut burfi, made for a colorful sweet table.', price: '15 for $30 · 30 for $45', category: 'burfi', color: '#ae7ad7', tags: ['ube', 'coconut'] },
+  { id: 'rooh-afza', name: 'Rooh Afza Coconut Burfi', description: 'Fragrant rose and coconut come together in this rosy little treat.', price: '15 for $35 · 30 for $50', category: 'burfi', color: '#ed79a0', tags: ['rose', 'coconut'] },
+]
+
+function MenuDisplay({ onOrder }: { onOrder?: () => void }) {
+  const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedItem, setSelectedItem] = useState<SweetItem | null>(null)
+  const filtered = selectedCategory === 'all' ? sweets : sweets.filter(sweet => sweet.category === selectedCategory)
+  const categories = [{ id: 'all', label: 'All the sweets' }, { id: 'narus', label: 'Narus' }, { id: 'burfi', label: 'Burfi' }]
 
-  // Menu data - you'll replace these with your actual images later
-  const sweets: SweetItem[] = [
-    {
-      id: 'narkel-narus',
-      name: 'Narkel Narus',
-      description: 'Traditional coconut balls made with fresh grated coconut and jaggery. A classic Bengali sweet.',
-      price: '$20 - $45',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'narus',
-      tags: ['Coconut', 'Traditional', 'Gluten-Free']
-    },
-    {
-      id: 'mango-burfi',
-      name: 'Mango Burfi',
-      description: 'Creamy milk fudge infused with real mango puree. A perfect summer treat!',
-      price: '$30 - $50',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'burfi',
-      tags: ['Mango', 'Creamy', 'Seasonal']
-    },
-    {
-      id: 'ube-coconut',
-      name: 'Ube Coconut Burfi',
-      description: 'Purple yam flavored coconut burfi with a hint of cardamom. Unique and delightful!',
-      price: '$30 - $45',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'burfi',
-      tags: ['Ube', 'Coconut', 'Purple']
-    },
-    {
-      id: 'rooh-afza',
-      name: 'Rooh Afza Coconut Burfi',
-      description: 'Rose-flavored coconut burfi with a beautiful pink hue. A floral delight!',
-      price: '$35 - $50',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'burfi',
-      tags: ['Rose', 'Floral', 'Pink']
-    },
-    {
-      id: 'assorted-narus',
-      name: 'Assorted Narus',
-      description: 'A beautiful assortment of our signature Narus in various colors and flavors.',
-      price: '$25 - $60',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'special',
-      tags: ['Assorted', 'Colorful', 'Gift']
-    },
-    {
-      id: 'premium-box',
-      name: 'Premium Mishti Box',
-      description: 'A curated selection of our finest sweets, perfect for weddings and special occasions.',
-      price: '$50 - $100',
-      image: 'https://images.unsplash.com/photo-1587313427070-1c6a9f4e0f3a?w=400&h=400&fit=crop',
-      category: 'special',
-      tags: ['Premium', 'Wedding', 'Gift Box']
-    }
-  ]
+  return <div className="menu-page">
+    <div className="menu-heading"><span className="eyebrow">a peek at our sweet table</span><h2>Made with <em>mithaas</em> ♡</h2><p>Handmade little treats for big happy days.</p></div>
+    <div className="menu-filters" aria-label="Filter sweets by type">{categories.map(category => <button key={category.id} className={selectedCategory === category.id ? 'selected' : ''} onClick={() => setSelectedCategory(category.id)}>{category.label}</button>)}</div>
+    <div className="sweet-grid">{filtered.map(sweet => <button key={sweet.id} className="sweet-tile" onClick={() => setSelectedItem(sweet)} aria-label={`See ${sweet.name}`}>
+      <SweetIllustration color={sweet.color} isNaru={sweet.category === 'narus'}/><span className="tile-shade"/><span className="tile-copy"><strong>{sweet.name}</strong><small>tap for a little more ✿</small></span><span className="tile-heart">♡</span>
+    </button>)}</div>
+    <div className="menu-note"><span>✷</span><p>Planning something special? We make every order fresh and can help you find the perfect sweets for your day.</p><button onClick={onOrder}>Let’s plan it <b>→</b></button></div>
+    {selectedItem && <div className="sweet-modal" role="presentation" onClick={() => setSelectedItem(null)}><section role="dialog" aria-modal="true" aria-labelledby="sweet-title" className="sweet-dialog" onClick={event => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedItem(null)} aria-label="Close details">×</button><div className="modal-art"><SweetIllustration color={selectedItem.color} isNaru={selectedItem.category === 'narus'}/></div><div className="modal-copy"><span className="eyebrow">handmade with love</span><h3 id="sweet-title">{selectedItem.name}</h3><p>{selectedItem.description}</p><strong>{selectedItem.price}</strong><div className="modal-tags">{selectedItem.tags.map(tag => <span key={tag}>#{tag}</span>)}</div><button className="modal-order" onClick={() => { setSelectedItem(null); onOrder?.() }}>Request this sweet <span>→</span></button></div></section></div>}
+  </div>
+}
 
-  // Filter sweets by category
-  const filteredSweets = selectedCategory === 'all' 
-    ? sweets 
-    : sweets.filter(sweet => sweet.category === selectedCategory)
-
-  // Categories for filter buttons
-  const categories = [
-    { id: 'all', label: 'All Sweets' },
-    { id: 'narus', label: 'Narus' },
-    { id: 'burfi', label: 'Burfi' },
-    { id: 'special', label: 'Special' }
-  ]
-
-  return (
-    <div style={{ padding: '20px' }}>
-      {/* Category Filter */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '10px', 
-        justifyContent: 'center', 
-        marginBottom: '30px',
-        flexWrap: 'wrap'
-      }}>
-        {categories.map(cat => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
-            style={{
-              padding: '10px 24px',
-              backgroundColor: selectedCategory === cat.id ? '#db2777' : '#f3f4f6',
-              color: selectedCategory === cat.id ? 'white' : '#333',
-              border: 'none',
-              borderRadius: '25px',
-              fontSize: '14px',
-              fontWeight: selectedCategory === cat.id ? 'bold' : 'normal',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Sweet Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '25px',
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
-        {filteredSweets.map((sweet) => (
-          <div
-            key={sweet.id}
-            className="menu-card"
-            onClick={() => setSelectedItem(sweet)}
-          >
-            <div 
-              className="menu-card-image"
-              style={{ backgroundImage: `url(${sweet.image})` }}
-            />
-            <div className="menu-card-content">
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'start',
-                marginBottom: '8px'
-              }}>
-                <h3 className="menu-card-title">
-                  {sweet.name}
-                </h3>
-                <span className="menu-card-price">
-                  {sweet.price}
-                </span>
-              </div>
-              <p className="menu-card-description">
-                {sweet.description}
-              </p>
-              <div className="menu-card-tags">
-                {sweet.tags?.map(tag => (
-                  <span key={tag} className="menu-tag">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Detail Modal */}
-      {selectedItem && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.6)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          padding: '20px'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            maxWidth: '600px',
-            width: '100%',
-            maxHeight: '90vh',
-            overflow: 'auto',
-            position: 'relative'
-          }}>
-            <button
-              onClick={() => setSelectedItem(null)}
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(0,0,0,0.1)',
-                border: 'none',
-                fontSize: '20px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'background-color 0.2s'
-              }}
-            >
-              ✕
-            </button>
-            <div style={{
-              height: '300px',
-              background: `url(${selectedItem.image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundColor: '#f3f4f6'
-            }} />
-            <div style={{ padding: '30px' }}>
-              <h2 style={{ fontSize: '28px', color: '#333', marginBottom: '5px' }}>
-                {selectedItem.name}
-              </h2>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '15px'
-              }}>
-                <span style={{
-                  backgroundColor: '#db2777',
-                  color: 'white',
-                  padding: '4px 16px',
-                  borderRadius: '20px',
-                  fontSize: '16px',
-                  fontWeight: 'bold'
-                }}>
-                  {selectedItem.price}
-                </span>
-                <span style={{
-                  backgroundColor: '#f3f4f6',
-                  color: '#666',
-                  padding: '4px 16px',
-                  borderRadius: '20px',
-                  fontSize: '14px',
-                  textTransform: 'capitalize'
-                }}>
-                  {selectedItem.category}
-                </span>
-              </div>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '15px'
-              }}>
-                {selectedItem.description}
-              </p>
-              <div style={{
-                display: 'flex',
-                gap: '8px',
-                flexWrap: 'wrap',
-                marginBottom: '20px'
-              }}>
-                {selectedItem.tags?.map(tag => (
-                  <span key={tag} style={{
-                    backgroundColor: '#fdf2f8',
-                    color: '#db2777',
-                    padding: '4px 14px',
-                    borderRadius: '20px',
-                    fontSize: '13px'
-                  }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <button
-                onClick={() => setSelectedItem(null)}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  backgroundColor: '#db2777',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-              >
-                Order This Sweet
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+function SweetIllustration({ color, isNaru }: { color: string; isNaru: boolean }) {
+  return <svg className="sweet-artwork" viewBox="0 0 400 400" aria-hidden="true"><rect width="400" height="400" fill={color}/><circle cx="42" cy="58" r="96" fill="#fff" opacity=".13"/><circle cx="365" cy="345" r="120" fill="#fff" opacity=".12"/><path d="M0 312Q110 270 210 320T400 299V400H0Z" fill="#fff" opacity=".13"/>
+    <g fill="none" stroke="#fff" strokeWidth="4" opacity=".7"><circle cx="67" cy="316" r="23" strokeDasharray="2 9"/><circle cx="331" cy="74" r="18" strokeDasharray="2 8"/></g>
+    {isNaru ? <g stroke="#ac724d" strokeWidth="3"><ellipse cx="200" cy="248" rx="137" ry="62" fill="#fff" opacity=".46"/><circle cx="131" cy="203" r="43" fill="#d49a62"/><circle cx="218" cy="184" r="48" fill="#f3d5a5"/><circle cx="287" cy="219" r="42" fill="#e8b675"/><circle cx="172" cy="272" r="39" fill="#f0d1a0"/><circle cx="254" cy="278" r="38" fill="#c78a55"/><g fill="none" stroke="#fff5dc" strokeWidth="5" strokeLinecap="round"><path d="M109 193l16-13m-5 40 22-25m-20-5 23 7m56-14 18-18m-3 46 19-24m-28 7 21 8m44 18 19-22m-17 47 22-27m-25-12 19 7m-113 80 21-26m25-27 18-18m-10 42 20-27"/></g></g> : <g stroke="#fff" strokeWidth="4"><ellipse cx="200" cy="263" rx="143" ry="57" fill="#fff" opacity=".45"/><g transform="rotate(-8 200 200)"><rect x="102" y="137" width="88" height="86" rx="13" fill={color} stroke="#fff9f6" strokeWidth="8"/><rect x="207" y="124" width="91" height="88" rx="13" fill={color} stroke="#fff9f6" strokeWidth="8"/><rect x="151" y="235" width="88" height="87" rx="13" fill={color} stroke="#fff9f6" strokeWidth="8"/><rect x="253" y="227" width="73" height="70" rx="12" fill={color} stroke="#fff9f6" strokeWidth="8"/><g fill="#fff6e9" stroke="none"><path d="M128 156h36v7h-36zm0 16h50v7h-50zm98-25h51v7h-51zm0 18h37v7h-37zm-57 86h44v7h-44zm0 18h31v7h-31zm98-9h35v7h-35z"/></g></g></g>}
+    <g fill="#fff"><path d="M73 126l6 13 14 2-10 9 3 14-13-7-13 7 3-14-10-9 14-2z"/><path d="M322 144l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z"/></g><g fill="#8c4976"><circle cx="63" cy="208" r="5"/><circle cx="342" cy="266" r="6"/><circle cx="82" cy="272" r="4"/></g></svg>
 }
 
 export default MenuDisplay

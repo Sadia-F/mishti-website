@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import MenuDisplay from './MenuDisplay'
 import './App.css'
+import heroImage from './assets/hero.png'
 
 type Page = 'form' | 'menu' | 'dashboard'
 const initialForm = {
@@ -69,7 +70,7 @@ function App() {
 
     {page === 'menu' ? <main className="content"><MenuDisplay /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
       <section className="hero" id="top">
-        <img src="/src/assets/hero.png" alt="A selection of colorful handmade Mishti & Mimi sweets" />
+        <img src={heroImage} alt="A selection of colorful handmade Mishti & Mimi sweets" />
         <div className="hero-copy"><span className="eyebrow">Made by women who love sweets</span><h1>A little sweetness<br/><em>for your celebration.</em></h1><p>Handmade Bengali mishti for life’s sweetest moments, made in Long Island and Queens.</p><a href="#order" className="hero-cta">Plan your order <span>↓</span></a></div>
       </section>
       <main className="content" id="order">

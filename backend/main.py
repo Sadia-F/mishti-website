@@ -18,6 +18,7 @@ app.add_middleware(
         "http://localhost:5173",
         "https://mishti-and-mimi-website.vercel.app",
         "https://mishti-website-five.vercel.app",
+        "https://sadia-f.github.io",
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -1,603 +1,121 @@
-// frontend/src/App.tsx
 import { useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import MenuDisplay from './MenuDisplay'
+import './App.css'
 
-function App() {
-  // State for form data
-  const [selectedQuantity, setSelectedQuantity] = useState('')
-  const [customAmount, setCustomAmount] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitMessage, setSubmitMessage] = useState('')
-  const [showDashboard, setShowDashboard] = useState<'form' | 'menu' | 'dashboard'>('form')
-  
-  const [formData, setFormData] = useState({
-    customerName: '',
-    email: '',
-    phone: '',
-    eventDate: '',
-    pickupDate: '',
-    productType: '',
-    paymentMethod: '',
-    additionalInfo: '',
-    colorCustomization: false,
-    agreeToTerms: false
-  })
-
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }))
-  }
-
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitMessage('')
-
-    // Prepare data to send
-    const orderData = {
-      ...formData,
-      quantity: selectedQuantity,
-      customAmount: selectedQuantity === 'custom' ? parseInt(customAmount) : null,
-    }
-
-    try {
-      const response = await fetch('https://mishti-api.onrender.com/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setSubmitMessage('✅ Order submitted successfully! We\'ll contact you within 24-48 hours.')
-        // Reset form
-        setFormData({
-          customerName: '',
-          email: '',
-          phone: '',
-          eventDate: '',
-          pickupDate: '',
-          productType: '',
-          paymentMethod: '',
-          additionalInfo: '',
-          colorCustomization: false,
-          agreeToTerms: false
-        })
-        setSelectedQuantity('')
-        setCustomAmount('')
-      } else {
-        setSubmitMessage('❌ Error: ' + (data.detail || 'Something went wrong'))
-      }
-    } catch (error) {
-      setSubmitMessage('❌ Error: Could not connect to server. Make sure the backend is running.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  return (
-    <div style={{ 
-      maxWidth: '1200px', 
-      margin: '0 auto', 
-      padding: '30px',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      {/* Header with Navigation */}
-      <div style={{ textAlign: 'center', borderBottom: '2px solid #f3e8ff', paddingBottom: '20px' }}>
-        <h1 style={{ color: '#db2777', fontSize: '36px' }}>🌸 Mishti & Mimi</h1>
-        <p style={{ color: '#666', fontSize: '16px' }}>Small Family Business • Made with Love ❤️</p>
-        
-        {/* Navigation Buttons */}
-        <div style={{ marginTop: '15px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setShowDashboard('form')}
-            style={{
-              padding: '8px 20px',
-              backgroundColor: showDashboard === 'form' ? '#db2777' : '#e5e7eb',
-              color: showDashboard === 'form' ? 'white' : '#333',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: showDashboard === 'form' ? 'bold' : 'normal'
-            }}
-          >
-            🍬 Order Form
-          </button>
-          <button
-            onClick={() => setShowDashboard('menu')}
-            style={{
-              padding: '8px 20px',
-              backgroundColor: showDashboard === 'menu' ? '#db2777' : '#e5e7eb',
-              color: showDashboard === 'menu' ? 'white' : '#333',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: showDashboard === 'menu' ? 'bold' : 'normal'
-            }}
-          >
-            📸 Menu
-          </button>
-          <button
-            onClick={() => setShowDashboard('dashboard')}
-            style={{
-              padding: '8px 20px',
-              backgroundColor: showDashboard === 'dashboard' ? '#db2777' : '#e5e7eb',
-              color: showDashboard === 'dashboard' ? 'white' : '#333',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: showDashboard === 'dashboard' ? 'bold' : 'normal'
-            }}
-          >
-            📋 Dashboard
-          </button>
-        </div>
-      </div>
-
-      {/* Conditionally render content */}
-      {showDashboard === 'menu' ? (
-        <MenuDisplay />
-      ) : showDashboard === 'dashboard' ? (
-        <AdminDashboard />
-      ) : (
-        /* Order Form */
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginTop: '30px' }}>
-            <h2 style={{ fontSize: '22px', color: '#333' }}>Place Your Order</h2>
-            <p style={{ color: '#666', fontSize: '14px' }}>
-              Please fill out this form and we'll contact you within 24-48 hours to confirm availability and provide a quote.
-            </p>
-
-            {/* Customer Name */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Name (First & Last) *
-              </label>
-              <input 
-                type="text" 
-                name="customerName"
-                value={formData.customerName}
-                onChange={handleInputChange}
-                placeholder="Your name" 
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box'
-                }} 
-              />
-            </div>
-
-            {/* Email */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Email Address *
-              </label>
-              <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="your@email.com" 
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box'
-                }} 
-              />
-            </div>
-
-            {/* Phone */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Contact Number *
-              </label>
-              <input 
-                type="tel" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="(516) 603-3637" 
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box'
-                }} 
-              />
-            </div>
-
-            {/* Event Date */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Date of Event *
-              </label>
-              <input 
-                type="date" 
-                name="eventDate"
-                value={formData.eventDate}
-                onChange={handleInputChange}
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  color: '#333'
-                }} 
-              />
-            </div>
-
-            {/* Pickup Date */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Date of Pickup *
-              </label>
-              <input 
-                type="date" 
-                name="pickupDate"
-                value={formData.pickupDate}
-                onChange={handleInputChange}
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  color: '#333'
-                }} 
-              />
-            </div>
-
-            {/* Product Type */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                What type of mishti would you like? *
-              </label>
-              <select 
-                name="productType"
-                value={formData.productType}
-                onChange={handleInputChange}
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: 'white'
-                }}
-              >
-                <option value="">Select a type...</option>
-                <option value="narkel">Narkel (Coconut) Narus</option>
-                <option value="mango">Mango Burfi</option>
-                <option value="ube">Ube Coconut Burfi</option>
-                <option value="roohafza">Rooh Afza Coconut Burfi</option>
-              </select>
-            </div>
-
-            {/* Quantity Options */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px', color: '#333' }}>
-                How many mishti would you like to order? *
-              </label>
-              
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '1fr 1fr', 
-                gap: '10px',
-                backgroundColor: '#faf5ff',
-                padding: '15px',
-                borderRadius: '8px'
-              }}>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="16" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                    required
-                  />
-                  16 Narkel Narus - $20
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="32" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  32 Narkel Narus - $45
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="15-mango" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  15 Mango Burfi - $30
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="30-mango" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  30 Mango Burfi - $50
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="15-ube" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  15 Ube Coconut Burfi - $30
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="30-ube" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  30 Ube Coconut Burfi - $45
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="15-roohafza" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  15 Rooh Afza Coconut Burfi - $35
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="30-roohafza" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  30 Rooh Afza Coconut Burfi - $50
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-                  <input 
-                    type="radio" 
-                    name="quantity" 
-                    value="custom" 
-                    style={{ marginRight: '8px' }}
-                    onChange={(e) => setSelectedQuantity(e.target.value)}
-                  />
-                  Custom Amount
-                </label>
-              </div>
-            </div>
-
-            {/* Custom Amount Input - ONLY SHOWS when "custom" is selected */}
-            {selectedQuantity === 'custom' && (
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                  If you selected "Custom Amount", please enter your desired amount
-                </label>
-                <input 
-                  type="number" 
-                  placeholder="Enter custom amount"
-                  value={customAmount}
-                  onChange={(e) => setCustomAmount(e.target.value)}
-                  style={{ 
-                    width: '100%', 
-                    padding: '10px', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '6px',
-                    fontSize: '16px',
-                    boxSizing: 'border-box'
-                  }} 
-                />
-              </div>
-            )}
-
-            {/* Payment Method */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Preferred Payment Method *
-              </label>
-              <select 
-                name="paymentMethod"
-                value={formData.paymentMethod}
-                onChange={handleInputChange}
-                required
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  boxSizing: 'border-box',
-                  backgroundColor: 'white'
-                }}
-              >
-                <option value="">Select a payment method...</option>
-                <option value="zelle">Zelle</option>
-                <option value="venmo">Venmo</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            {/* Additional Information */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', color: '#333' }}>
-                Additional Information
-              </label>
-              <textarea 
-                name="additionalInfo"
-                value={formData.additionalInfo}
-                onChange={handleInputChange}
-                placeholder="Any special requests, flavor preferences, or notes..."
-                style={{ 
-                  width: '100%', 
-                  padding: '10px', 
-                  border: '1px solid #ddd', 
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  minHeight: '100px',
-                  boxSizing: 'border-box',
-                  fontFamily: 'Arial, sans-serif'
-                }}
-              />
-            </div>
-
-            {/* Color Customization Checkbox */}
-            <div style={{ 
-              marginBottom: '20px', 
-              padding: '15px', 
-              backgroundColor: '#fdf2f8', 
-              borderRadius: '8px',
-              border: '1px solid #fbcfe8'
-            }}>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '15px', color: '#333' }}>
-                <input 
-                  type="checkbox" 
-                  name="colorCustomization"
-                  checked={formData.colorCustomization}
-                  onChange={handleInputChange}
-                  style={{ marginRight: '10px', width: '18px', height: '18px' }} 
-                />
-                I'd like to customize the colors! (Small additional fee applies)
-              </label>
-              <p style={{ marginTop: '8px', fontSize: '13px', color: '#666', marginLeft: '28px' }}>
-                Our Narkel Narus can be made into different colors at a small additional fee!
-              </p>
-            </div>
-
-            {/* Terms & Conditions */}
-            <div style={{ 
-              marginBottom: '20px', 
-              padding: '15px', 
-              backgroundColor: '#f8fafc', 
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h3 style={{ fontSize: '16px', color: '#333', marginBottom: '8px' }}>📋 Terms & Conditions</h3>
-              <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
-                Submitting this form is the first step toward bringing your sweet idea to life—but it's not a confirmed order just yet! 
-                Once you hit submit, I'll take a look at all your tasty details and reach out within 24-48 hours to chat about availability, 
-                answer any questions, and send over a personalized quote.
-              </p>
-              <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6', marginTop: '10px' }}>
-                Your order becomes official only after we've finalized everything together and the payment has been made.
-              </p>
-              <label style={{ display: 'flex', alignItems: 'center', marginTop: '12px', fontWeight: 'bold', color: '#333' }}>
-                <input 
-                  type="checkbox" 
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleInputChange}
-                  required
-                  style={{ marginRight: '10px', width: '18px', height: '18px' }} 
-                />
-                I agree to the terms and conditions *
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <div style={{ marginTop: '30px' }}>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                style={{ 
-                  width: '100%', 
-                  padding: '15px', 
-                  backgroundColor: isSubmitting ? '#9ca3af' : '#db2777', 
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  transition: 'background-color 0.3s'
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSubmitting) {
-                    e.currentTarget.style.backgroundColor = '#be185d'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSubmitting) {
-                    e.currentTarget.style.backgroundColor = '#db2777'
-                  }
-                }}
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Order Request'}
-              </button>
-              {submitMessage && (
-                <div style={{ 
-                  marginTop: '15px', 
-                  padding: '12px', 
-                  backgroundColor: submitMessage.includes('✅') ? '#d1fae5' : '#fecaca',
-                  color: submitMessage.includes('✅') ? '#065f46' : '#991b1b',
-                  borderRadius: '6px',
-                  textAlign: 'center'
-                }}>
-                  {submitMessage}
-                </div>
-              )}
-              <p style={{ textAlign: 'center', color: '#999', fontSize: '12px', marginTop: '10px' }}>
-                We'll contact you within 24-48 hours to confirm your order
-              </p>
-            </div>
-          </div>
-        </form>
-      )}
-
-      {/* Footer */}
-      <div style={{ 
-        marginTop: '40px', 
-        textAlign: 'center', 
-        color: '#999',
-        borderTop: '1px solid #f3e8ff',
-        paddingTop: '20px',
-        fontSize: '14px'
-      }}>
-        <p>Questions? Contact us at (516) 603-3637</p>
-        <p>© 2026 Mishti & Mimi. All rights reserved.</p>
-      </div>
-    </div>
-  );
+type Page = 'form' | 'menu' | 'dashboard'
+const initialForm = {
+  customerName: '', email: '', phone: '', eventDate: '', pickupDate: '',
+  fulfillment: '', occasion: '', occasionOther: '', productType: '', productOther: '',
+  paymentMethod: '', paymentOther: '', additionalInfo: '', colorCustomization: false, agreeToTerms: false,
 }
 
-export default App;
+const packages = [
+  ['16', '16 Narkel Narus', '$20'], ['32', '32 Narkel Narus', '$45'],
+  ['15-mango', '15 Mango Burfi', '$30'], ['30-mango', '30 Mango Burfi', '$50'],
+  ['15-ube', '15 Ube Coconut Burfi', '$30'], ['30-ube', '30 Ube Coconut Burfi', '$45'],
+  ['15-roohafza', '15 Rooh Afza Coconut Burfi', '$35'], ['30-roohafza', '30 Rooh Afza Coconut Burfi', '$50'],
+  ['custom', 'Custom amount', 'Personalized quote'],
+]
+
+function App() {
+  const [page, setPage] = useState<Page>('form')
+  const [form, setForm] = useState(initialForm)
+  const [quantity, setQuantity] = useState('')
+  const [customAmount, setCustomAmount] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [message, setMessage] = useState('')
+  const [success, setSuccess] = useState(false)
+
+  const update = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target
+    setForm(current => ({ ...current, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }))
+  }
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setSubmitting(true); setMessage(''); setSuccess(false)
+    const order = {
+      ...form,
+      productType: form.productType === 'other' ? `other: ${form.productOther}` : form.productType,
+      occasion: form.occasion === 'Other' ? `Other: ${form.occasionOther}` : form.occasion,
+      fulfillment: form.fulfillment,
+      paymentMethod: form.paymentMethod === 'other' ? `other: ${form.paymentOther}` : form.paymentMethod,
+      quantity, customAmount: quantity === 'custom' ? Number(customAmount) : null,
+    }
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://mishti-api.onrender.com'}/api/orders`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(order),
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(data.detail || 'Please try again in a moment.')
+      setSuccess(true)
+      setMessage(`Your request is in!${data.orderId ? ` Request #${data.orderId}.` : ''} We’ll reach out within 24–48 hours to discuss availability and your quote.`)
+      setForm(initialForm); setQuantity(''); setCustomAmount('')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'We couldn’t submit your request. Please try again or contact us directly.')
+    } finally { setSubmitting(false) }
+  }
+
+  return <div className="site-shell">
+    <header className="site-header">
+      <div className="brand-mark" aria-hidden="true">M<span>&</span>M</div>
+      <a className="brand-name" href="#top" onClick={() => setPage('form')}>Mishti <i>&</i> Mimi</a>
+      <p className="brand-tagline">Little sweets, made with love</p>
+      <nav aria-label="Main navigation" className="main-nav">
+        {(['form', 'menu', 'dashboard'] as Page[]).map(item => <button key={item} className={page === item ? 'active' : ''} onClick={() => setPage(item)}>{item === 'form' ? 'Order request' : item === 'menu' ? 'Our menu' : 'Dashboard'}</button>)}
+      </nav>
+    </header>
+
+    {page === 'menu' ? <main className="content"><MenuDisplay /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
+      <section className="hero" id="top">
+        <img src="/src/assets/hero.png" alt="A selection of colorful handmade Mishti & Mimi sweets" />
+        <div className="hero-copy"><span className="eyebrow">Made by women who love sweets</span><h1>A little sweetness<br/><em>for your celebration.</em></h1><p>Handmade Bengali mishti for life’s sweetest moments, made in Long Island and Queens.</p><a href="#order" className="hero-cta">Plan your order <span>↓</span></a></div>
+      </section>
+      <main className="content" id="order">
+        <div className="intro"><span className="eyebrow">Let’s make something sweet</span><h2>Order request</h2><p>Tell us a little about your celebration. We’ll be in touch within 24–48 hours to confirm availability, answer questions, and share a personalized quote.</p></div>
+        <div className="notice"><span className="notice-icon">✿</span><p><strong>A request is the first step, not a confirmed order.</strong> Your order is official once we’ve finalized the details together and payment is complete. All orders depend on our mishti-making schedule.</p></div>
+        <form onSubmit={submit} className="order-form">
+          <section className="form-section"><SectionTitle number="01" title="Your details"/><div className="field-grid">
+            <Field label="Name (first & last)" required><input name="customerName" value={form.customerName} onChange={update} autoComplete="name" required placeholder="Your name"/></Field>
+            <Field label="Email address" required><input type="email" name="email" value={form.email} onChange={update} autoComplete="email" required placeholder="you@example.com"/></Field>
+            <Field label="Contact number" required><input type="tel" name="phone" value={form.phone} onChange={update} autoComplete="tel" required placeholder="(516) 555-0123"/></Field>
+          </div></section>
+
+          <section className="form-section"><SectionTitle number="02" title="Your celebration"/><div className="field-grid">
+            <Field label="Date of event" required><input type="date" name="eventDate" value={form.eventDate} min={new Date().toISOString().slice(0,10)} onChange={update} required/></Field>
+            <Field label="Date of pickup or delivery" required><input type="date" name="pickupDate" value={form.pickupDate} min={form.eventDate || new Date().toISOString().slice(0,10)} onChange={update} required/></Field>
+            <Field label="How would you like to receive your order?" required hint="Currently serving Queens and Long Island."><select name="fulfillment" value={form.fulfillment} onChange={update} required><option value="">Choose one</option><option>Pickup</option><option>Delivery</option></select></Field>
+            <Field label="Occasion" required><select name="occasion" value={form.occasion} onChange={update} required><option value="">Choose an occasion</option>{['Birthday','Wedding','Bridal Shower','Mehndi/Holud/Haldi','Baby Shower','Anniversary','Graduation','Other'].map(x => <option key={x}>{x}</option>)}</select></Field>
+            {form.occasion === 'Other' && <Field label="Tell us about the occasion" required><input name="occasionOther" value={form.occasionOther} onChange={update} required placeholder="Your occasion"/></Field>}
+          </div></section>
+
+          <section className="form-section"><SectionTitle number="03" title="The mishti"/><div className="field-grid">
+            <Field label="What type of mishti would you like?" required hint="For other types, tell us what you have in mind. We’ll follow up about logistics."><select name="productType" value={form.productType} onChange={update} required><option value="">Choose a mishti</option><option value="narkel">Narkel (Coconut) Narus</option><option value="mango">Mango Burfi</option><option value="ube">Ube Coconut Burfi</option><option value="roohafza">Rooh Afza Coconut Burfi</option><option value="other">Other</option></select></Field>
+            {form.productType === 'other' && <Field label="What kind of mishti?" required><input name="productOther" value={form.productOther} onChange={update} required placeholder="Describe the mishti"/></Field>}
+          </div>
+          <fieldset className="package-field"><legend>How many would you like? <b>*</b></legend><div className="package-grid">{packages.map(([id, label, price]) => <label className={`package-option ${quantity === id ? 'chosen' : ''}`} key={id}><input type="radio" name="quantity" value={id} checked={quantity === id} onChange={e => setQuantity(e.target.value)} required/><span className="radio-dot"/><span className="package-name">{label}</span><span className="package-price">{price}</span></label>)}</div></fieldset>
+          {quantity === 'custom' && <Field label="Desired amount" required><input type="number" min="1" step="1" value={customAmount} onChange={e => setCustomAmount(e.target.value)} required placeholder="Number of pieces"/></Field>}
+          <label className="check-card"><input type="checkbox" name="colorCustomization" checked={form.colorCustomization} onChange={update}/><span><strong>Interested in custom colors?</strong><small>Narkel Narus can be made in different colors for a small additional fee. Select this and we’ll share the options.</small></span></label>
+          </section>
+
+          <section className="form-section"><SectionTitle number="04" title="A few more details"/><div className="field-grid">
+            <Field label="Preferred payment method" required><select name="paymentMethod" value={form.paymentMethod} onChange={update} required><option value="">Choose one</option><option value="zelle">Zelle</option><option value="venmo">Venmo</option><option value="other">Other</option></select></Field>
+            {form.paymentMethod === 'other' && <Field label="Preferred payment method" required><input name="paymentOther" value={form.paymentOther} onChange={update} required placeholder="Tell us which method"/></Field>}
+            <Field label="Additional information" hint="Share any special requests, flavors, or design ideas."><textarea name="additionalInfo" value={form.additionalInfo} onChange={update} rows={4} placeholder="We’d love to hear your ideas…"/></Field>
+          </div></section>
+
+          <section className="terms-card"><span className="eyebrow">Please read before submitting</span><h3>Terms &amp; conditions</h3><div className="terms-copy"><p>Submitting this form is the first step toward bringing your sweet idea to life—but it’s not a confirmed order just yet! Once you hit submit, I’ll take a look at all your tasty details and reach out within 24–48 hours to chat about availability, answer any questions, and send over a personalized quote.</p><p>Your order becomes official only after we’ve finalized everything together and the payment has been made. All orders depend on our mishti-making schedule, so certain dates or custom designs may require a little extra lead time. We’ll contact you using the email or phone number you provide, but you’re always welcome to reach out directly through our <a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram</a> or <a href="mailto:mishtimini@gmail.com">email</a> if you need us sooner.</p><p>Prices may vary depending on your flavors, quantities, and custom touches, and we’ll sort out pickup or delivery details during confirmation. If you need to make changes, please let me know at least 7 days before your event, and just a heads-up—cancellations after payment may come with a fee.</p></div><label className="terms-agree"><input type="checkbox" name="agreeToTerms" checked={form.agreeToTerms} onChange={update} required/><span>I agree to the terms &amp; conditions <b>*</b></span></label></section>
+
+          <div className="submit-row"><button className="submit-button" type="submit" disabled={submitting}>{submitting ? 'Sending your request…' : 'Send order request'}<span>↗</span></button><p>This is an inquiry only. No payment is collected here.</p>{message && <div role="status" className={`form-message ${success ? 'success' : 'error'}`}>{message}</div>}</div>
+        </form>
+      </main>
+    </>}
+    <footer className="site-footer"><a className="footer-brand" href="#top" onClick={() => setPage('form')}>Mishti &amp; Mimi</a><p>Handmade with love in Long Island &amp; Queens, NY</p><div><a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="mailto:mishtimini@gmail.com">Email us ↗</a><a href="tel:+15166033637">(516) 603-3637</a></div><small>© 2026 Mishti &amp; Mimi</small></footer>
+  </div>
+}
+
+function SectionTitle({ number, title }: {number: string; title: string}) { return <div className="section-title"><span>{number}</span><h3>{title}</h3></div> }
+function Field({ label, required, hint, children }: {label: string; required?: boolean; hint?: string; children: React.ReactNode}) { return <label className="field"><span className="field-label">{label}{required && <b> *</b>}</span>{children}{hint && <small>{hint}</small>}</label> }
+
+export default App

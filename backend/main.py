@@ -44,6 +44,8 @@ class OrderCreate(BaseModel):
     phone: str
     eventDate: str
     pickupDate: str
+    occasion: str
+    fulfillment: str
     productType: str
     quantity: str
     customAmount: Optional[int] = None

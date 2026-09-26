@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import MenuDisplay from './MenuDisplay'
 import './App.css'
+import brandBanner from './assets/brand-banner.png'
 
 type Page = 'form' | 'menu' | 'dashboard'
 const initialForm = {
@@ -69,16 +70,14 @@ function App() {
 
     {page === 'menu' ? <main className="content"><MenuDisplay onOrder={() => setPage('form')} /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
       <section className="hero" id="top">
-        <div className="hero-sparkles" aria-hidden="true"><span>✦</span><span>✿</span><span>♥</span><span>✧</span></div>
-        <div className="hero-copy"><span className="eyebrow"><i>✿</i> made by women who love sweets <i>✿</i></span><h1>A little sweetness<br/><em>for your celebration!</em></h1><p>Handmade Bengali mishti for all of life’s sweet moments, made with love in Long Island &amp; Queens.</p><a href="#order" className="hero-cta">Let’s make it sweet <span>→</span></a><div className="hero-handle">@mishtimini <span>✷</span> Queens &amp; Long Island, NY</div></div>
-        <HeroSweets />
+        <div className="hero-copy"><img className="hero-brand-banner" src={brandBanner} alt="Mishti & Mimi, handmade Bengali sweets"/><span className="eyebrow"><i>✿</i> made by women who love sweets <i>✿</i></span><p className="hero-subtitle">Little sweets, made with love.</p><p>Women-founded · Family-run<br/>Long Island &amp; NYC</p><a href="#order" className="hero-cta">Request a sweet order <span>→</span></a></div>
       </section>
       <section className="highlight-row" aria-label="Explore Mishti and Mimi">
-        <button className="highlight" onClick={() => setPage('menu')}><span className="highlight-art highlight-pink">✿</span><span>the menu</span></button>
-        <a className="highlight" href="#order"><span className="highlight-art highlight-yellow">♡</span><span>celebrate</span></a>
-        <a className="highlight" href="#about"><span className="highlight-art highlight-purple">✦</span><span>our story</span></a>
-        <a className="highlight" href="#terms"><span className="highlight-art highlight-orange">☻</span><span>questions</span></a>
-        <a className="highlight" href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer"><span className="highlight-art highlight-mint">↗</span><span>instagram</span></a>
+        <a className="highlight" href="https://www.instagram.com/mishtinmimi/" target="_blank" rel="noreferrer"><span className="highlight-art highlight-pink"><i>Feedback</i></span><span>Feedback</span></a>
+        <a className="highlight" href="#order"><span className="highlight-art highlight-yellow"><i>Events</i></span><span>Events</span></a>
+        <button className="highlight" onClick={() => setPage('menu')}><span className="highlight-art highlight-purple"><i>Menu</i></span><span>Menu</span></button>
+        <a className="highlight" href="#about"><span className="highlight-art highlight-orange"><i>About Us</i></span><span>About Us</span></a>
+        <a className="highlight" href="#terms"><span className="highlight-art highlight-pink"><i>F.A.Q</i></span><span>FAQ</span></a>
       </section>
       <main className="content" id="order">
         <div className="intro" id="about"><span className="eyebrow">✿ &nbsp; let’s make something sweet &nbsp; ✿</span><h2>Sweeten your <em>celebration</em></h2><p>Tell us a little about your special day. We’ll be in touch within 24–48 hours to confirm availability, answer questions, and share a personalized quote.</p></div>
@@ -125,19 +124,5 @@ function App() {
 
 function SectionTitle({ number, title }: {number: string; title: string}) { return <div className="section-title"><span>{number}</span><h3>{title}</h3></div> }
 function Field({ label, required, hint, children }: {label: string; required?: boolean; hint?: string; children: React.ReactNode}) { return <label className="field"><span className="field-label">{label}{required && <b> *</b>}</span>{children}{hint && <small>{hint}</small>}</label> }
-
-function HeroSweets() {
-  return <div className="hero-art" aria-hidden="true"><svg viewBox="0 0 520 450" role="presentation">
-    <defs><radialGradient id="plate" cx="48%" cy="40%"><stop stopColor="#fff"/><stop offset=".8" stopColor="#fff9f7"/><stop offset="1" stopColor="#ef9ab3"/></radialGradient><linearGradient id="truffle" x2=".9" y2="1"><stop stopColor="#fff5dc"/><stop offset="1" stopColor="#d6a27c"/></linearGradient><linearGradient id="ube" x2="1" y2="1"><stop stopColor="#d8a6f1"/><stop offset="1" stopColor="#8854c4"/></linearGradient><linearGradient id="mango" x2="0" y2="1"><stop stopColor="#ffd277"/><stop offset="1" stopColor="#ec8c35"/></linearGradient><filter id="shadow" x="-.2" y="-.2" width="1.5" height="1.5"><feDropShadow dx="0" dy="12" stdDeviation="9" floodColor="#923656" floodOpacity=".2"/></filter></defs>
-    <ellipse cx="265" cy="277" rx="213" ry="141" fill="#d83f77" opacity=".17"/><ellipse cx="260" cy="254" rx="213" ry="141" fill="url(#plate)" stroke="#fff" strokeWidth="9" filter="url(#shadow)"/><ellipse cx="260" cy="248" rx="185" ry="114" fill="none" stroke="#ef9db5" strokeWidth="2" strokeDasharray="3 8"/>
-    <g stroke="#a55a39" strokeWidth="2"><circle cx="157" cy="205" r="35" fill="url(#truffle)"/><circle cx="213" cy="173" r="33" fill="url(#truffle)"/><circle cx="274" cy="190" r="35" fill="#f8d7ac"/><circle cx="333" cy="171" r="32" fill="url(#mango)"/><circle cx="377" cy="221" r="35" fill="url(#ube)"/><circle cx="128" cy="259" r="32" fill="url(#mango)"/><circle cx="182" cy="280" r="36" fill="url(#ube)"/><circle cx="251" cy="271" r="36" fill="#ef7394"/><circle cx="321" cy="278" r="36" fill="url(#truffle)"/><circle cx="365" cy="275" r="26" fill="#f7c86b"/></g>
-    <g fill="none" stroke="#fff8ec" strokeWidth="2.4" strokeLinecap="round"><path d="M138 204l9-13m4 37 14-17m-1-17-16 3M198 170l8-13m13 32-8-15m51 20 16-18m-19 42-2-18M322 169l9-13m-10 40 14-17m35 39 14-20m-28 3 19-8M117 259l13-18m-5 39 18-14m-17-7 17 8m35 14 16-21m-8 47 10-22m-6-19 12 10m51 10 12-20m-9 44 17-18m-22-20 13 7m58-16 15-18m-13 45 12-17m-19-16 17 5"/></g>
-    <g fill="#f6d04e"><path d="M230 218l6 8 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z"/><path d="M302 224l4 6 7 1-5 5 1 7-7-3-6 3 1-7-5-5 7-1z"/></g>
-    <g fill="#ef4d83"><path d="M221 305c-18-12-18-27-6-30 6-1 10 3 12 7 5-9 18-9 20 0 2 8-9 18-26 23z"/><path d="M285 148c-14-9-14-21-5-23 5-1 8 2 10 6 4-7 14-7 16 0s-7 14-21 17z"/></g>
-    <g fill="#65ab68"><path d="M90 175q30-43 57-39-15 30-57 39zm315 40q24-34 48-30-13 25-48 30z"/><path d="M101 162q7 20 27 25m277 5q8 16 22 20" fill="none" stroke="#65ab68" strokeWidth="3"/></g>
-    <g fill="#fff" stroke="#ed5b89" strokeWidth="3"><circle cx="116" cy="107" r="25"/><circle cx="415" cy="116" r="22"/></g><g fill="#ec5685"><path d="M116 91c-8 9-4 17 0 19 4-2 8-10 0-19zm-15 16c13-3 18 3 17 8-6 3-13 2-17-8zm26 0c-13-3-18 3-17 8 6 3 13 2 17-8zm-11 23c-8-12-4-19 0-20 4 1 8 8 0 20z"/><path d="M415 102c-8 9-4 16 0 18 4-2 8-9 0-18zm-14 15c12-3 16 3 15 8-5 3-11 2-15-8zm24 0c-12-3-16 3-15 8 5 3 11 2 15-8z"/></g>
-    <g fill="#e97797"><circle cx="78" cy="304" r="4"/><circle cx="432" cy="309" r="5"/><circle cx="188" cy="112" r="4"/><circle cx="361" cy="103" r="5"/><circle cx="70" cy="232" r="3"/><circle cx="452" cy="248" r="3"/></g>
-  </svg><span className="art-sticker sticker-one">handmade<br/>with ♥</span><span className="art-sticker sticker-two">so sweet!</span></div>
-}
 
 export default App

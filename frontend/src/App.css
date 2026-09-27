@@ -99,3 +99,45 @@
   .form-section { padding: 21px 17px 23px; }
   .terms-card { padding: 20px 17px 18px; }
 }
+
+/* Refined palette and typography for a calmer, more polished bakery brand. */
+.site-shell { color: #342e2a; background: #fbf8f3; }
+.site-header { border-bottom: 1px solid #e7ddd4; }
+.brand-mark { border-color: #d8b8b3; color: #874650; background: #f4e9e5; }
+.brand-mark i { color: #657568; }
+.brand-name,.footer-brand { color: #874650; font-family: 'DM Sans',sans-serif; font-weight: 700; letter-spacing: -.045em; text-shadow: none; }
+.brand-tagline { color: #776b65; }
+.main-nav button { color: #625750; }
+.main-nav button:hover,.main-nav button.active { color: white; background: #874650; }
+.content { padding-top: 48px; }
+.intro h2,.menu-heading h2 { color: #342e2a; font-family: 'Playfair Display', Georgia, serif; font-weight: 600; letter-spacing: -.035em; }
+.intro h2 em,.menu-heading h2 em { color: #874650; }
+.intro p,.menu-heading p { color: #70645e; }
+.eyebrow { color: #874650; }
+.notice { border-color: #e2d5c8; background: #f4eee6; color: #615750; }
+.notice strong { color: #342e2a; }
+.notice-icon { color: #a85d68; }
+.section-title > span { color: #874650; background: #f4e9e5; }
+.section-title h3 { color: #342e2a; font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
+.field,.package-field legend { color: #50453f; }
+.field input,.field select,.field textarea { border-color: #ded4cb; color: #342e2a; }
+.field input:focus,.field select:focus,.field textarea:focus { border-color: #a85d68; box-shadow: 0 0 0 3px #f4e9e5; }
+.field b,.package-field legend b,.terms-agree b { color: #874650; }
+.package-option:hover,.package-option.chosen { border-color: #b77a7d; background: #f8f0eb; }
+.package-price { color: #874650; }
+.check-card { border-color: #e2d9ca; background: #f6f2e9; }
+.check-card input,.terms-agree input { accent-color: #874650; }
+.terms-card { border-color: #e7ddd4; border-top-color: #a85d68; background: #fffdfa; }
+.terms-card h3 { color: #342e2a; font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
+.terms-copy p { color: #70645e; }
+.terms-copy a { color: #874650; }
+.terms-agree { color: #50453f; border-top-color: #e7ddd4; }
+.submit-button,.hero-cta { background: #874650; }
+.submit-button:hover:not(:disabled),.hero-cta:hover { background: #6f3942; }
+.site-footer { border-top-color: #e7ddd4; background: #f4eee6; }
+.site-footer p,.site-footer div a { color: #625750; }
+.site-footer small { color: #84776f; }
+@media(max-width:700px) {
+  .content { padding-top: 36px; }
+  .intro h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 34px; }
+}

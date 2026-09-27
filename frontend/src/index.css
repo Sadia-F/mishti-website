@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 
-:root { font-family: 'DM Sans', sans-serif; color: #632946; background: #fff8fa; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --pink: #ed5790; --pink-dark: #c53070; --pink-light: #fff0f5; --ink: #632946; --muted: #9c7184; }
+:root { font-family: 'DM Sans', sans-serif; color: #342e2a; background: #fbf8f3; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --pink: #a85d68; --pink-dark: #874650; --pink-light: #f4e9e5; --ink: #342e2a; --muted: #776b65; --paper: #fbf8f3; --line: #e7ddd4; --sage: #657568; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; }

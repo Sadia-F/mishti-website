@@ -30,12 +30,12 @@ function MenuDisplay({ onOrder }: { onOrder?: () => void }) {
   const categories = [{ id: 'all', label: 'All the sweets' }, { id: 'narus', label: 'Narus' }, { id: 'burfi', label: 'Burfi' }]
 
   return <div className="menu-page">
-    <div className="menu-heading"><span className="eyebrow">a peek at our sweet table</span><h2>Made with <em>mithaas</em> ♡</h2><p>Handmade little treats for big happy days.</p></div>
+    <div className="menu-heading"><span className="eyebrow">a peek at our sweet table</span><h2>Made with <em>mithaas</em> ♡</h2><p>Handmade little treats for big happy days. Package prices are listed on every sweet.</p></div>
     <div className="menu-filters" aria-label="Filter sweets by type">{categories.map(category => <button key={category.id} className={selectedCategory === category.id ? 'selected' : ''} onClick={() => setSelectedCategory(category.id)}>{category.label}</button>)}</div>
     <div className="sweet-grid">{filtered.map(sweet => <button key={sweet.id} className="sweet-tile" onClick={() => setSelectedItem(sweet)} aria-label={`See ${sweet.name}`}>
       <img className="sweet-photo" src={sweet.image} alt={`${sweet.name} handmade dessert`} loading="lazy"/><span className="tile-shade"/><span className="tile-copy"><strong>{sweet.name}</strong><small>{sweet.price} · tap for details</small></span><span className="tile-heart">♡</span>
     </button>)}</div>
-    <div className="menu-note"><span>✷</span><p>Planning something special? We make every order fresh and can help you find the perfect sweets for your day.</p><button onClick={onOrder}>Let’s plan it <b>→</b></button></div>
+    <div className="menu-note"><span>✷</span><p>Need a custom quantity or a different kind of mishti? Choose a custom amount for a personalized quote, or tell us what you have in mind in your order request.</p><button onClick={onOrder}>Request an order <b>→</b></button></div>
     {selectedItem && <div className="sweet-modal" role="presentation" onClick={() => setSelectedItem(null)}><section role="dialog" aria-modal="true" aria-labelledby="sweet-title" className="sweet-dialog" onClick={event => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedItem(null)} aria-label="Close details">×</button><div className="modal-art"><img src={selectedItem.image} alt={`${selectedItem.name} from Mishti & Mimi`} /></div><div className="modal-copy"><span className="eyebrow">handmade with love</span><h3 id="sweet-title">{selectedItem.name}</h3><p>{selectedItem.description}</p><strong>{selectedItem.price}</strong><div className="modal-tags">{selectedItem.tags.map(tag => <span key={tag}>#{tag}</span>)}</div><a className="instagram-source" href={selectedItem.instagramUrl} target="_blank" rel="noreferrer">See more on Instagram ↗</a><button className="modal-order" onClick={() => { setSelectedItem(null); onOrder?.() }}>Request this sweet <span>→</span></button></div></section></div>}
   </div>
 }

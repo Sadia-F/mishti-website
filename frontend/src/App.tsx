@@ -2,7 +2,6 @@ import { useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import MenuDisplay from './MenuDisplay'
 import './App.css'
-import brandBanner from './assets/brand-banner.png'
 
 type Page = 'form' | 'menu' | 'dashboard'
 const initialForm = {
@@ -20,7 +19,7 @@ const packages = [
 ]
 
 function App() {
-  const [page, setPage] = useState<Page>('form')
+  const [page, setPage] = useState<Page>('menu')
   const [form, setForm] = useState(initialForm)
   const [quantity, setQuantity] = useState('')
   const [customAmount, setCustomAmount] = useState('')
@@ -60,25 +59,15 @@ function App() {
 
   return <div className="site-shell">
     <header className="site-header">
-      <a className="brand-mark" href="#top" onClick={() => setPage('form')} aria-label="Mishti and Mimi home"><span>Mishti</span><i>&amp;</i><span>Mimi</span></a>
-      <a className="brand-name" href="#top" onClick={() => setPage('form')}>Mishti <i>&amp;</i> Mimi</a>
+      <a className="brand-mark" href="#top" onClick={() => setPage('menu')} aria-label="Mishti and Mimi home"><span>Mishti</span><i>&amp;</i><span>Mimi</span></a>
+      <a className="brand-name" href="#top" onClick={() => setPage('menu')}>Mishti <i>&amp;</i> Mimi</a>
       <p className="brand-tagline">Little sweets, made with love</p>
       <nav aria-label="Main navigation" className="main-nav">
         {(['form', 'menu', 'dashboard'] as Page[]).map(item => <button key={item} className={page === item ? 'active' : ''} onClick={() => setPage(item)}>{item === 'form' ? 'Order request' : item === 'menu' ? 'Our menu' : 'Dashboard'}</button>)}
       </nav>
     </header>
 
-    {page === 'menu' ? <main className="content"><MenuDisplay onOrder={() => setPage('form')} /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
-      <section className="hero" id="top">
-        <div className="hero-copy"><img className="hero-brand-banner" src={brandBanner} alt="Mishti & Mimi, handmade Bengali sweets"/><span className="eyebrow"><i>✿</i> made by women who love sweets <i>✿</i></span><p className="hero-subtitle">Little sweets, made with love.</p><p>Women-founded · Family-run<br/>Long Island &amp; NYC</p><a href="#order" className="hero-cta">Request a sweet order <span>→</span></a></div>
-      </section>
-      <section className="highlight-row" aria-label="Explore Mishti and Mimi">
-        <a className="highlight" href="https://www.instagram.com/mishtinmimi/" target="_blank" rel="noreferrer"><span className="highlight-art highlight-pink"><i>Feedback</i></span><span>Feedback</span></a>
-        <a className="highlight" href="#order"><span className="highlight-art highlight-yellow"><i>Events</i></span><span>Events</span></a>
-        <button className="highlight" onClick={() => setPage('menu')}><span className="highlight-art highlight-purple"><i>Menu</i></span><span>Menu</span></button>
-        <a className="highlight" href="#about"><span className="highlight-art highlight-orange"><i>About Us</i></span><span>About Us</span></a>
-        <a className="highlight" href="#terms"><span className="highlight-art highlight-pink"><i>F.A.Q</i></span><span>FAQ</span></a>
-      </section>
+    {page === 'menu' ? <main className="content" id="top"><MenuDisplay onOrder={() => setPage('form')} /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
       <main className="content" id="order">
         <div className="intro" id="about"><span className="eyebrow">✿ &nbsp; let’s make something sweet &nbsp; ✿</span><h2>Sweeten your <em>celebration</em></h2><p>Tell us a little about your special day. We’ll be in touch within 24–48 hours to confirm availability, answer questions, and share a personalized quote.</p></div>
         <div className="notice"><span className="notice-icon">✿</span><p><strong>A request is the first step, not a confirmed order.</strong> Your order is official once we’ve finalized the details together and payment is complete. All orders depend on our mishti-making schedule.</p></div>
@@ -118,7 +107,7 @@ function App() {
         </form>
       </main>
     </>}
-    <footer className="site-footer"><a className="footer-brand" href="#top" onClick={() => setPage('form')}>Mishti &amp; Mimi</a><p>Handmade with love in Long Island &amp; Queens, NY</p><div><a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="mailto:mishtimini@gmail.com">Email us ↗</a><a href="tel:+15166033637">(516) 603-3637</a></div><small>© 2026 Mishti &amp; Mimi</small></footer>
+    <footer className="site-footer"><a className="footer-brand" href="#top" onClick={() => setPage('menu')}>Mishti &amp; Mimi</a><p>Handmade with love in Long Island &amp; Queens, NY</p><div><a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="mailto:mishtimini@gmail.com">Email us ↗</a><a href="tel:+15166033637">(516) 603-3637</a></div><small>© 2026 Mishti &amp; Mimi</small></footer>
   </div>
 }
 

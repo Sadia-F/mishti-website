@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './MenuDisplay.css'
 import naruPhoto from './assets/menu/mango-burfi.jpg'
-import mangoPhoto from './assets/menu/mango-burfi.jpg'
+import mangoPhoto from './assets/menu/mango-burfi.png'
 import ubePhoto from './assets/menu/ube-coconut-burfi.jpg'
 import rosePhoto from './assets/menu/ube-coconut-burfi.jpg'
 

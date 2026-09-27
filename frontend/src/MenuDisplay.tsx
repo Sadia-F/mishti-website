@@ -3,7 +3,7 @@ import './MenuDisplay.css'
 import naruPhoto from './assets/menu/narkel-narus.png'
 import mangoPhoto from './assets/menu/mango-burfi.png'
 import ubePhoto from './assets/menu/ube-coconut-burfi.jpg'
-import rosePhoto from './assets/menu/ube-coconut-burfi.jpg'
+import rosePhoto from './assets/menu/rooh-afza-coconut-layered-burfi.png'
 
 interface SweetItem {
   id: string
@@ -20,7 +20,7 @@ const sweets: SweetItem[] = [
   { id: 'narkel-narus', name: 'Narkel Narus', description: 'A Bengali favorite: tender coconut sweets rolled by hand and made for sharing.', price: '16 for $20 · 32 for $45', category: 'narus', image: naruPhoto, instagramUrl: 'https://www.instagram.com/mishtinmimi/', tags: ['coconut', 'traditional'] },
   { id: 'mango-burfi', name: 'Mango Burfi', description: 'Sunny, fruity mango burfi with a soft, creamy bite.', price: '15 for $30 · 30 for $50', category: 'burfi', image: mangoPhoto, instagramUrl: 'https://www.instagram.com/p/Da5xAt6EX_G/', tags: ['mango', 'a little sunshine'] },
   { id: 'ube-coconut', name: 'Ube Coconut Burfi', description: 'A pretty purple twist on coconut burfi, made for a colorful sweet table.', price: '15 for $30 · 30 for $45', category: 'burfi', image: ubePhoto, instagramUrl: 'https://www.instagram.com/p/Da5xAt6EX_G/', tags: ['ube', 'coconut'] },
-  { id: 'rooh-afza', name: 'Rooh Afza Coconut Burfi', description: 'Fragrant rose and coconut come together in this rosy little treat.', price: '15 for $35 · 30 for $50', category: 'burfi', image: rosePhoto, instagramUrl: 'https://www.instagram.com/mishtinmimi/', tags: ['rose', 'coconut'] },
+  { id: 'rooh-afza', name: 'Rooh Afza Coconut Layered Burfi', description: 'Fragrant rose and coconut come together in this rosy little treat.', price: '15 for $35 · 30 for $50', category: 'burfi', image: rosePhoto, instagramUrl: 'https://www.instagram.com/mishtinmimi/', tags: ['rose', 'coconut'] },
 ]
 
 function MenuDisplay({ onOrder }: { onOrder?: () => void }) {

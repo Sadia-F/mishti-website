@@ -4,9 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+from email.message import EmailMessage
+import asyncio
 import os
 import asyncpg
 import json
+import smtplib
+import ssl
 
 # Create FastAPI app
 app = FastAPI(title="Mishti & Mimi API")
@@ -89,103 +93,69 @@ async def create_order(order: OrderCreate):
                 datetime.utcnow()
             )
             
+        email_sent = await asyncio.to_thread(send_order_notification, order_dict, result["id"])
+
         return {
             "message": "Order submitted successfully!",
             "orderId": result["id"],
-            "status": "pending"
+            "status": "pending",
+            "emailSent": email_sent,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Get all orders
-@app.get("/api/orders")
-async def get_all_orders():
-    try:
-        pool = await get_db()
-        async with pool.acquire() as conn:
-            rows = await conn.fetch(
-                """
-                SELECT id, data, status, created_at
-                FROM orders
-                ORDER BY created_at DESC
-                """
-            )
-        
-        orders = []
-        for row in rows:
-            order = json.loads(row["data"])
-            order["id"] = row["id"]
-            order["status"] = row["status"]
-            order["createdAt"] = row["created_at"].isoformat()
-            orders.append(order)
-            
-        return orders
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def send_order_notification(order, order_id):
+    """Email a new order to the configured owner inbox when SMTP is enabled."""
+    username = os.getenv("SMTP_USERNAME")
+    password = os.getenv("SMTP_PASSWORD")
+    if not username or not password:
+        print("Order saved, but email delivery is disabled: SMTP credentials are not configured.")
+        return False
 
-# Get single order by ID
-@app.get("/api/orders/{order_id}")
-async def get_order(order_id: int):
-    try:
-        pool = await get_db()
-        async with pool.acquire() as conn:
-            row = await conn.fetchrow(
-                "SELECT id, data, status, created_at FROM orders WHERE id = $1",
-                order_id
-            )
-        
-        if row is None:
-            raise HTTPException(status_code=404, detail="Order not found")
-            
-        order = json.loads(row["data"])
-        order["id"] = row["id"]
-        order["status"] = row["status"]
-        order["createdAt"] = row["created_at"].isoformat()
-        return order
-    except HTTPException:
-        raise
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid order ID")
+    recipient = os.getenv("ORDER_NOTIFICATION_EMAIL", "sadiaferdous003@gmail.com")
+    sender = os.getenv("SMTP_FROM_EMAIL", username)
+    host = os.getenv("SMTP_HOST", "smtp.gmail.com")
+    port = int(os.getenv("SMTP_PORT", "587"))
 
-# Update order status
-@app.put("/api/orders/{order_id}/status")
-async def update_order_status(order_id: int, status: str):
-    try:
-        pool = await get_db()
-        async with pool.acquire() as conn:
-            result = await conn.execute(
-                "UPDATE orders SET status = $1 WHERE id = $2",
-                status, order_id
-            )
-            
-        if result == "UPDATE 0":
-            raise HTTPException(status_code=404, detail="Order not found")
-            
-        return {"message": f"Order status updated to {status}"}
-    except HTTPException:
-        raise
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid order ID")
+    message = EmailMessage()
+    message["Subject"] = "New Mishti & Mimi order request"
+    message["From"] = sender
+    message["To"] = recipient
+    message["Reply-To"] = str(order["email"])
+    message.set_content(
+        "A new order request was submitted.\n\n"
+        f"Request number: {order_id}\n"
+        f"Name: {order['customerName']}\n"
+        f"Customer email: {order['email']}\n"
+        f"Phone: {order['phone']}\n"
+        f"Event date: {order['eventDate']}\n"
+        f"Pickup or delivery date: {order['pickupDate']}\n"
+        f"Fulfillment: {order['fulfillment']}\n"
+        f"Occasion: {order['occasion']}\n"
+        f"Mishti: {order['productType']}\n"
+        f"Quantity package: {order['quantity']}\n"
+        f"Custom amount: {order.get('customAmount') or 'Not requested'}\n"
+        f"Custom colors: {'Yes' if order.get('colorCustomization') else 'No'}\n"
+        f"Preferred payment: {order['paymentMethod']}\n"
+        f"Additional information: {order.get('additionalInfo') or 'None'}\n"
+    )
 
-# Delete order
-@app.delete("/api/orders/{order_id}")
-async def delete_order(order_id: int):
     try:
-        pool = await get_db()
-        async with pool.acquire() as conn:
-            result = await conn.execute(
-                "DELETE FROM orders WHERE id = $1",
-                order_id
-            )
-            
-        if result == "DELETE 0":
-            raise HTTPException(status_code=404, detail="Order not found")
-            
-        return {"message": "Order deleted successfully"}
-    except HTTPException:
-        raise
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid order ID")
+        if port == 465:
+            with smtplib.SMTP_SSL(host, port, context=ssl.create_default_context(), timeout=20) as smtp:
+                smtp.login(username, password)
+                smtp.send_message(message)
+        else:
+            with smtplib.SMTP(host, port, timeout=20) as smtp:
+                smtp.ehlo()
+                smtp.starttls(context=ssl.create_default_context())
+                smtp.ehlo()
+                smtp.login(username, password)
+                smtp.send_message(message)
+        return True
+    except Exception as error:
+        print(f"Order notification email failed: {error}")
+        return False
 
 # Startup event - create table if it doesn't exist
 @app.on_event("startup")

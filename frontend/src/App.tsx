@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import AdminDashboard from './AdminDashboard'
 import MenuDisplay from './MenuDisplay'
 import './App.css'
 
-type Page = 'form' | 'menu' | 'dashboard'
+type Page = 'form' | 'menu'
 const initialForm = {
   customerName: '', email: '', phone: '', eventDate: '', pickupDate: '',
   fulfillment: '', occasion: '', occasionOther: '', productType: '', productOther: '',
@@ -49,8 +48,10 @@ function App() {
       })
       const data = await response.json().catch(() => ({}))
       if (!response.ok) throw new Error(data.detail || 'Please try again in a moment.')
-      setSuccess(true)
-      setMessage(`Your request is in!${data.orderId ? ` Request #${data.orderId}.` : ''} We’ll reach out within 24–48 hours to discuss availability and your quote.`)
+      setSuccess(data.emailSent === true)
+      setMessage(data.emailSent !== true
+        ? `Your request is saved${data.orderId ? ` as #${data.orderId}` : ''}, but the email notification could not be sent yet. Please contact us directly while email delivery is being configured.`
+        : `Your request is in!${data.orderId ? ` Request #${data.orderId}.` : ''} We’ll reach out within 24–48 hours to discuss availability and your quote.`)
       setForm(initialForm); setQuantity(''); setCustomAmount('')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'We couldn’t submit your request. Please try again or contact us directly.')
@@ -63,11 +64,12 @@ function App() {
       <a className="brand-name" href="#top" onClick={() => setPage('menu')}>Mishti <i>&amp;</i> Mimi</a>
       <p className="brand-tagline">Little sweets, made with love</p>
       <nav aria-label="Main navigation" className="main-nav">
-        {(['form', 'menu', 'dashboard'] as Page[]).map(item => <button key={item} className={page === item ? 'active' : ''} onClick={() => setPage(item)}>{item === 'form' ? 'Order request' : item === 'menu' ? 'Our menu' : 'Dashboard'}</button>)}
+        <button className={page === 'form' ? 'active' : ''} onClick={() => setPage('form')}>Order request</button>
+        <button className={page === 'menu' ? 'active' : ''} onClick={() => setPage('menu')}>Our menu</button>
       </nav>
     </header>
 
-    {page === 'menu' ? <main className="content" id="top"><MenuDisplay onOrder={() => setPage('form')} /></main> : page === 'dashboard' ? <main className="content"><AdminDashboard /></main> : <>
+    {page === 'menu' ? <main className="content" id="top"><MenuDisplay onOrder={() => setPage('form')} /></main> : <>
       <main className="content" id="order">
         <div className="intro" id="about"><span className="eyebrow">✿ &nbsp; let’s make something sweet &nbsp; ✿</span><h2>Sweeten your <em>celebration</em></h2><p>Tell us a little about your special day. We’ll be in touch within 24–48 hours to confirm availability, answer questions, and share a personalized quote.</p></div>
         <div className="notice"><span className="notice-icon">✿</span><p><strong>A request is the first step, not a confirmed order.</strong> Your order is official once we’ve finalized the details together and payment is complete. All orders depend on our mishti-making schedule.</p></div>
@@ -101,13 +103,13 @@ function App() {
             <Field label="Additional information" hint="Share any special requests, flavors, or design ideas."><textarea name="additionalInfo" value={form.additionalInfo} onChange={update} rows={4} placeholder="We’d love to hear your ideas…"/></Field>
           </div></section>
 
-          <section className="terms-card" id="terms"><span className="eyebrow">A little note before we begin</span><h3>Terms &amp; conditions</h3><div className="terms-copy"><p>Submitting this form is the first step toward bringing your sweet idea to life—but it’s not a confirmed order just yet! Once you hit submit, I’ll take a look at all your tasty details and reach out within 24–48 hours to chat about availability, answer any questions, and send over a personalized quote.</p><p>Your order becomes official only after we’ve finalized everything together and the payment has been made. All orders depend on our mishti-making schedule, so certain dates or custom designs may require a little extra lead time. We’ll contact you using the email or phone number you provide, but you’re always welcome to reach out directly through our <a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram</a> or <a href="mailto:mishtimini@gmail.com">email</a> if you need us sooner.</p><p>Prices may vary depending on your flavors, quantities, and custom touches, and we’ll sort out pickup or delivery details during confirmation. If you need to make changes, please let me know at least 7 days before your event, and just a heads-up—cancellations after payment may come with a fee.</p></div><label className="terms-agree"><input type="checkbox" name="agreeToTerms" checked={form.agreeToTerms} onChange={update} required/><span>I agree to the terms &amp; conditions <b>*</b></span></label></section>
+          <section className="terms-card" id="terms"><span className="eyebrow">A little note before we begin</span><h3>Terms &amp; conditions</h3><div className="terms-copy"><p>Submitting this form is the first step toward bringing your sweet idea to life—but it’s not a confirmed order just yet! Once you hit submit, I’ll take a look at all your tasty details and reach out within 24–48 hours to chat about availability, answer any questions, and send over a personalized quote.</p><p>Your order becomes official only after we’ve finalized everything together and the payment has been made. All orders depend on our mishti-making schedule, so certain dates or custom designs may require a little extra lead time. We’ll contact you using the email or phone number you provide, but you’re always welcome to reach out directly through our <a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram</a> or <a href="mailto:sadiaferdous003@gmail.com">email</a> if you need us sooner.</p><p>Prices may vary depending on your flavors, quantities, and custom touches, and we’ll sort out pickup or delivery details during confirmation. If you need to make changes, please let me know at least 7 days before your event, and just a heads-up—cancellations after payment may come with a fee.</p></div><label className="terms-agree"><input type="checkbox" name="agreeToTerms" checked={form.agreeToTerms} onChange={update} required/><span>I agree to the terms &amp; conditions <b>*</b></span></label></section>
 
           <div className="submit-row"><button className="submit-button" type="submit" disabled={submitting}>{submitting ? 'Sending your request…' : 'Send order request'}<span>↗</span></button><p>This is an inquiry only. No payment is collected here.</p>{message && <div role="status" className={`form-message ${success ? 'success' : 'error'}`}>{message}</div>}</div>
         </form>
       </main>
     </>}
-    <footer className="site-footer"><a className="footer-brand" href="#top" onClick={() => setPage('menu')}>Mishti &amp; Mimi</a><p>Handmade with love in Long Island &amp; Queens, NY</p><div><a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="mailto:mishtimini@gmail.com">Email us ↗</a><a href="tel:+15166033637">(516) 603-3637</a></div><small>© 2026 Mishti &amp; Mimi</small></footer>
+    <footer className="site-footer"><a className="footer-brand" href="#top" onClick={() => setPage('menu')}>Mishti &amp; Mimi</a><p>Handmade with love in Long Island &amp; Queens, NY</p><div><a href="https://www.instagram.com/mishtimini/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="mailto:sadiaferdous003@gmail.com">Email us ↗</a><a href="tel:+15166033637">(516) 603-3637</a></div><small>© 2026 Mishti &amp; Mimi</small></footer>
   </div>
 }
 

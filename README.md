@@ -43,3 +43,16 @@ yarn build                 # production build
 ```
 
 The frontend expects the API at `localhost:5173` (dev) and is configured for the Vercel deployments listed in the backend CORS allowlist.
+
+### Order email notifications
+
+New order requests are stored in PostgreSQL and emailed to `ORDER_NOTIFICATION_EMAIL`. Configure these variables in the backend host's environment (for example, Render):
+
+- `ORDER_NOTIFICATION_EMAIL=sadiaferdous003@gmail.com`
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=587`
+- `SMTP_USERNAME=sadiaferdous003@gmail.com`
+- `SMTP_PASSWORD=<Gmail app password>`
+- `SMTP_FROM_EMAIL=sadiaferdous003@gmail.com` (optional; defaults to `SMTP_USERNAME`)
+
+For Gmail, use an app password created for the sending account; never commit it to the repository. If SMTP credentials are missing or email delivery fails, the order remains saved and the form reports that notification could not be sent.

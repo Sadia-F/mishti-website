@@ -46,9 +46,8 @@ The frontend expects the API at `localhost:5173` (dev) and is configured for the
 
 ### Order email notifications
 
-New order requests are stored in PostgreSQL and emailed to `ORDER_NOTIFICATION_EMAIL`. Configure these variables in the backend host's environment (for example, Render):
+New order requests are stored in PostgreSQL and emailed to `sadiaferdous003@gmail.com`. Configure these variables in the backend host's environment (for example, Render):
 
-- `ORDER_NOTIFICATION_EMAIL=sadiaferdous003@gmail.com`
 - `SMTP_HOST=smtp.gmail.com`
 - `SMTP_PORT=587`
 - `SMTP_USERNAME=sadiaferdous003@gmail.com`

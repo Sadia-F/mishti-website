@@ -112,7 +112,7 @@ def send_order_notification(order, order_id):
         print("Order saved, but email delivery is disabled: SMTP credentials are not configured.")
         return False
 
-    recipient = os.getenv("ORDER_NOTIFICATION_EMAIL", "sadiaferdous003@gmail.com")
+    recipient = "sadiaferdous003@gmail.com"
     sender = os.getenv("SMTP_FROM_EMAIL", username)
     host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     port = int(os.getenv("SMTP_PORT", "587"))
